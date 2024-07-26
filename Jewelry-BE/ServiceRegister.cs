@@ -19,16 +19,17 @@ public static class ServiceRegister
         });
 
         // Get the connection string from the configuration
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("OnlineConnection");
 
         // Register the DbContext with the connection string
         services.AddDbContext<JewelryItemContext>(options =>
             options.UseSqlServer(connectionString));
 
-        // Register other services
-        services.AddScoped<IEmployeeRepo, EmployeeRepo>();
         services.AddScoped<EmployeDAO>();
         services.AddScoped<CustomerDAO>();
+        services.AddScoped<ProductDAO>();
+        services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+        services.AddScoped<IProductRepo, ProductRepo>();
         services.AddScoped<ICustomerRepo, CustomerRepo>();
     }
 }
