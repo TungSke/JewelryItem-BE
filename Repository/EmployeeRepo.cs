@@ -1,5 +1,7 @@
 ﻿using BOs;
 using DAOs;
+using DAOs.Request;
+using DAOs.Response;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,20 @@ namespace Repository
 {
     public class EmployeeRepo : IEmployeeRepo
     {
-        public Employee Login(string email, string password) => EmployeDAO.Instance.Login(email, password);
+        private readonly EmployeDAO EmployeDAO;
+        public EmployeeRepo(EmployeDAO employeDAO)
+        {
+            EmployeDAO = employeDAO;
+        }
+
+        public void CreateEmployee(EmployeeRequest employee) => EmployeDAO.CreateEmployee(employee);
+
+        public void DeleteEmployee(int id) => EmployeDAO.DeleteEmployee(id);
+
+        public List<EmployeeResponse> GetAllEmployees(string? search) => EmployeDAO.GetAllEmployees(search);
+
+        public Employee GetEmployeeById(int id) => EmployeDAO.GetEmployeeById(id);
+
+        public Employee Login(string email, string password) => EmployeDAO.Login(email, password);
     }
 }

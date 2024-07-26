@@ -1,4 +1,7 @@
 ﻿using BOs;
+using DAOs.Request;
+using DAOs.Response;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +13,49 @@ namespace DAOs
     public class EmployeDAO
     {
         private readonly JewelryItemContext _context;
-        private static EmployeDAO instance = null;
-        public static EmployeDAO Instance
+        
+        public EmployeDAO(JewelryItemContext context)
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new EmployeDAO();
-                }
-                return instance;
-            }
-        }
-
-        private EmployeDAO()
-        {
-            _context = new JewelryItemContext();
+            _context = context;
         }
 
         public Employee Login(string email, string password)
         {
             return _context.Employees.FirstOrDefault(e => e.Email == email && e.Password == password);
         }
+
+        public Employee GetEmployeeById(int id)
+        {
+            return _context.Employees.Find(id);
+        }
+
+        public List<EmployeeResponse> GetAllEmployees(string? search)
+        {
+            var list = _context.Employees.ToList();
+            if (!string.IsNullOrEmpty(search))
+            {
+                list = list.Where(e => e.FullName.ToLower().Contains(search.ToLower()) || e.Email.ToLower().Contains(search.ToLower())).ToList();
+            }
+            var mapperlist = list.Adapt<List<EmployeeResponse>>();
+            return mapperlist;
+        }
+
+        public void CreateEmployee(EmployeeRequest employee)
+        {
+            _context.Employees.Add(employee.Adapt<Employee>());
+            _context.SaveChanges();
+        }
+
+        public void DeleteEmployee(int id)
+        {
+            var emp = _context.Employees.Find(id);
+            if (emp != null)
+            {
+                _context.Employees.Remove(emp);
+                _context.SaveChanges();
+            }
+        }
+
+
     }
 }
