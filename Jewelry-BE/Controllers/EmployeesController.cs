@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using BOs;
 using Repository.Interface;
 using DAOs.Request;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Jewelry_BE.Controllers
 {
@@ -23,10 +27,35 @@ namespace Jewelry_BE.Controllers
         }
 
         [HttpGet("login")]
-        public async Task<IActionResult> Login(string email,string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
             var employee = _employeeRepo.Login(email, password);
-            return Ok(employee);
+            var jwtToken = GenerateToken(employee.EmployeeId.ToString(), employee.Email, employee.Role, employee.FullName);
+            return Ok(new { token = jwtToken });
+        }
+
+        private string GenerateToken(string id, string email, string role, string? name)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authenticationthis is my custom Secret key for authentication"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            name = name ?? "";
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, id),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(ClaimTypes.Role, role),
+                new Claim(JwtRegisteredClaimNames.Name, name),
+            };
+
+            var token = new JwtSecurityToken(
+               "localhost:7777",
+                "localhost:7777",
+                claims,
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: credentials
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpGet]
