@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using DAOs.Request;
+using Repository;
 
 namespace Jewelry_BE.Controllers
 {
@@ -10,6 +12,13 @@ namespace Jewelry_BE.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        private readonly IOrderRepo _orderRepo;
+
+        public OrdersController(IOrderRepo orderRepo)
+        {
+            _orderRepo = orderRepo;
+        }
+        
         [HttpGet("VNPay")]
         public IActionResult VNPay(double amount, string orderInfo)
         {
@@ -82,6 +91,24 @@ namespace Jewelry_BE.Controllers
                 // Chuyển mảng byte thành chuỗi hex
                 return string.Concat(hashBytes.Select(b => b.ToString("x2")));
             }
+        }
+        
+        [HttpGet]
+        public IActionResult getAllOrders()
+        {
+            return Ok(_orderRepo.getAllOrders());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult getOrderById(int id)
+        {
+            return Ok(_orderRepo.getOrderById(id));
+        }
+
+        [HttpPost]
+        public IActionResult createOrder([FromBody] OrderRequest orderRequest)
+        {
+            return Ok(_orderRepo.createOrder(orderRequest));
         }
     }
 }

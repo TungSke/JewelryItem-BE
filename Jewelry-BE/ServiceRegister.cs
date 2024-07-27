@@ -19,7 +19,7 @@ public static class ServiceRegister
         });
 
         // Get the connection string from the configuration
-        var connectionString = configuration.GetConnectionString("OnlineConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // Register the DbContext with the connection string
         services.AddDbContext<JewelryItemContext>(options =>
@@ -28,6 +28,8 @@ public static class ServiceRegister
         services.AddScoped<EmployeDAO>();
         services.AddScoped<CustomerDAO>();
         services.AddScoped<ProductDAO>();
+        services.AddScoped<OrderDAO>();
+        services.AddScoped<IOrderRepo, OrderRepo>();
         services.AddScoped<IEmployeeRepo, EmployeeRepo>();
         services.AddScoped<IProductRepo, ProductRepo>();
         services.AddScoped<ICustomerRepo, CustomerRepo>();
