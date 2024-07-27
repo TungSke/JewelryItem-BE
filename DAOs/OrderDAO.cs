@@ -72,7 +72,7 @@ namespace DAOs
             return response;
         }
 
-        
+
         public async Task<OrderResponse?> GetOrderByIdAsync(int id)
         {
             var order = await _context.Orders
@@ -102,22 +102,16 @@ namespace DAOs
                     .First(o => o.OrderId == response.OrderId)
                     .OrderItems.Adapt<List<OrderItemResponse>>();
             }
+
             return responses;
         }
-        
+
         private string GenerateUniqueOrderNumber()
         {
             var datePart = DateTime.UtcNow.ToString("yyyyMMdd");
             var uniquePart = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
             return $"ORD-{datePart}-{uniquePart}".Substring(0, 20);
         }
-        return responses;
-    }
-
-    private string GenerateUniqueOrderNumber()
-    {
-        var datePart = DateTime.UtcNow.ToString("yyyyMMdd");
-        var uniquePart = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
-        return $"ORD-{datePart}-{uniquePart}".Substring(0, 20);
     }
 }
+    

@@ -52,7 +52,7 @@ namespace Jewelry_BE.Controllers
             string IpAddressRequest = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
             var paymentUrl = _orderRepo.VNPay(double.Parse(orderRequest.FinalAmount.ToString()), "thanh toán bằng VNPAY", IpAddressRequest);
             orderRequest.PaymentMethod = "VNPAY";
-            _orderRepo.createOrder(orderRequest);
+            _orderRepo.CreateOrderAsync(orderRequest);
             return Ok(new { Url = paymentUrl });
         }
 
