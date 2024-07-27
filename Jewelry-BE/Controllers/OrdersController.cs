@@ -22,21 +22,28 @@ namespace Jewelry_BE.Controllers
         }
 
         [HttpGet]
-        public IActionResult getAllOrders()
+        public async Task<IActionResult> GetAllOrdersAsync()
         {
-            return Ok(_orderRepo.getAllOrders());
+            var orders = await _orderRepo.GetAllOrdersAsync();
+            return Ok(orders);
         }
 
         [HttpGet("{id}")]
-        public IActionResult getOrderById(int id)
+        public async Task<IActionResult> GetOrderByIdAsync(int id)
         {
-            return Ok(_orderRepo.getOrderById(id));
+            var order = await _orderRepo.GetOrderByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
         }
 
         [HttpPost]
-        public IActionResult createOrder([FromBody] OrderRequest orderRequest)
+        public async Task<IActionResult> CreateOrderAsync([FromBody] OrderRequest orderRequest)
         {
-            return Ok(_orderRepo.createOrder(orderRequest));
+            var order = await _orderRepo.CreateOrderAsync(orderRequest);
+            return Ok(order);
         }
 
         [HttpPost("vnpay")]
@@ -45,7 +52,7 @@ namespace Jewelry_BE.Controllers
             string IpAddressRequest = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
             var paymentUrl = _orderRepo.VNPay(double.Parse(orderRequest.FinalAmount.ToString()), "thanh toán bằng VNPAY", IpAddressRequest);
             orderRequest.PaymentMethod = "VNPAY";
-            _orderRepo.createOrder(orderRequest);
+            _orderRepo.CreateOrderAsync(orderRequest);
             return Ok(new { Url = paymentUrl });
         }
 

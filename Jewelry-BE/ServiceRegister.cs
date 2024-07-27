@@ -29,6 +29,8 @@ public static class ServiceRegister
         services.AddScoped<CustomerDAO>();
         services.AddScoped<ProductDAO>();
         services.AddScoped<OrderDAO>();
+        services.AddScoped<PromotionDAO>();
+        services.AddScoped<IPromotionRepo, PromotionRepo>();
         services.AddScoped<IOrderRepo, OrderRepo>();
         services.AddScoped<IEmployeeRepo, EmployeeRepo>();
         services.AddScoped<IProductRepo, ProductRepo>();
