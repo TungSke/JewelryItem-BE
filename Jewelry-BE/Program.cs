@@ -1,4 +1,5 @@
 using Jewelry_BE;
+using Jewelry_BE.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -68,7 +69,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 

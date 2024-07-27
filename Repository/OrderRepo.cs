@@ -47,7 +47,7 @@ public class OrderRepo : IOrderRepo
                 vnp_TxnRef = vnp_TxnRef, //số hóa đơn (dùng trong database) nên dùng GUID để tránh trùng lặp
                 vnp_OrderInfo = orderInfo, //nội dung thanh toán (description)
                 vnp_OrderType = "billpayment",
-                vnp_ReturnUrl = "http://localhost:7000/api/Order/returnVnPay", //call api return exist page
+                vnp_ReturnUrl = "/api/Order/returnVnPay", //call api return exist page
                 vnp_IpAddr = IpAddressRequest,
                 vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
                 vnp_ExpireDate = DateTime.Now.AddMinutes(2).ToString("yyyyMMddHHmmss"),
