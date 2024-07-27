@@ -5,9 +5,8 @@ namespace Repository;
 
 public interface IOrderRepo
 {
-    OrderResponse createOrder(OrderRequest orderRequest);
+    Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest);
+    Task<OrderResponse?> GetOrderByIdAsync(int id);
 
-    OrderResponse getOrderById(int id);
-
-    List<OrderResponse> getAllOrders();
+    Task<List<OrderResponse>> GetAllOrdersAsync();
 }

@@ -12,10 +12,9 @@ public class OrderRepo : IOrderRepo
     {
         _orderDAO = orderDAO;
     }
-    
-    public OrderResponse createOrder(OrderRequest orderRequest) => _orderDAO.createOrder(orderRequest);
+    public Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest) => _orderDAO.CreateOrderAsync(orderRequest);
 
-    public OrderResponse getOrderById(int id) => _orderDAO.getOrderById(id);
+    public Task<OrderResponse?> GetOrderByIdAsync(int id) => _orderDAO.GetOrderByIdAsync(id);
 
-    public List<OrderResponse> getAllOrders() => _orderDAO.getAllOrders();
+    public Task<List<OrderResponse>> GetAllOrdersAsync() => _orderDAO.GetAllOrdersAsync();
 }
