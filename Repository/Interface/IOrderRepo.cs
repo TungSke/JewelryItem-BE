@@ -5,10 +5,8 @@ namespace Repository;
 
 public interface IOrderRepo
 {
-    OrderResponse createOrder(OrderRequest orderRequest);
-
-    OrderResponse getOrderById(int id);
-
-    List<OrderResponse> getAllOrders();
+    Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest);
+    Task<OrderResponse?> GetOrderByIdAsync(int id);
+    Task<List<OrderResponse>> GetAllOrdersAsync();
     string VNPay(double amount, string orderInfo, string IpAddressRequest);
 }
