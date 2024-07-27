@@ -13,86 +13,14 @@ namespace Jewelry_BE.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepo _orderRepo;
+        private readonly IConfiguration _configuration;
 
-        public OrdersController(IOrderRepo orderRepo)
+        public OrdersController(IOrderRepo orderRepo, IConfiguration configuration)
         {
             _orderRepo = orderRepo;
-        }
-        
-        [HttpGet("VNPay")]
-        public IActionResult VNPay(double amount, string orderInfo)
-        {
-            try
-            {
-                const string VNPayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-                var vnp_TxnRef = Guid.NewGuid().ToString();
-                var vnPayAmount = amount * 100000; // Số tiền cần thanh toán theo đơn vị của VNPay
-                string clientIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-
-                // Mã bí mật của bạn từ cấu hình
-                string vnp_HashSecret = "PFWXSZUDDBJVEATFGBOBRLYRXLEBWCCO";
-
-                var requestData = new
-                {
-                    vnp_Version = "2.1.0",
-                    vnp_Command = "pay",
-                    vnp_TmnCode = "3F6V0MH8",
-                    vnp_Amount = vnPayAmount,
-                    vnp_Locale = "vn",
-                    vnp_CurrCode = "VND",
-                    vnp_TxnRef = vnp_TxnRef, //số hóa đơn (dùng trong database) nên dùng GUID để tránh trùng lặp
-                    vnp_OrderInfo = orderInfo, //nội dung thanh toán (description)   
-                    vnp_OrderType = "billpayment",
-                    vnp_ReturnUrl = "http://localhost:5090/api/Accounts/returnVnPay", //call api return exist page
-                    vnp_IpAddr = clientIpAddress,
-                    vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                    vnp_ExpireDate = DateTime.Now.AddMinutes(2).ToString("yyyyMMddHHmmss"),
-                };
-
-                // Sắp xếp các thuộc tính của yêu cầu theo thứ tự chữ cái
-                var sortedData = requestData.GetType().GetProperties()
-                    .OrderBy(p => p.Name)
-                    .ToDictionary(p => p.Name, p => p.GetValue(requestData)?.ToString() ?? "");
-
-                // Tạo query string từ dữ liệu đã sắp xếp
-                var queryString = string.Join("&", sortedData.Select(kvp => $"{kvp.Key}={WebUtility.UrlEncode(kvp.Value)}"));
-
-                // Tạo chữ ký cho yêu cầu
-                var signature = GenerateVnPaySignature(queryString, vnp_HashSecret);
-
-                // Thêm chữ ký vào dữ liệu yêu cầu
-                sortedData.Add("vnp_SecureHashType", "SHA512");
-                sortedData.Add("vnp_SecureHash", signature);
-
-                // Tạo query string mới từ dữ liệu đã có chữ ký
-                var queryStringWithSignature = string.Join("&", sortedData.Select(kvp => $"{kvp.Key}={WebUtility.UrlEncode(kvp.Value)}"));
-
-                // Tạo URL hoàn chỉnh cho VNPay
-                var redirectUrl = $"{VNPayUrl}?{queryStringWithSignature}";
-                return Ok(redirectUrl);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            _configuration=configuration;
         }
 
-        private string GenerateVnPaySignature(string data, string hashSecret)
-        {
-            // Chuyển mã bí mật và dữ liệu cần ký thành mảng byte
-            byte[] hashSecretBytes = Encoding.UTF8.GetBytes(hashSecret);
-            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-
-            // Sử dụng HMAC-SHA512 để tạo chữ ký
-            using (var hmac = new HMACSHA512(hashSecretBytes))
-            {
-                byte[] hashBytes = hmac.ComputeHash(dataBytes);
-                // Chuyển mảng byte thành chuỗi hex
-                return string.Concat(hashBytes.Select(b => b.ToString("x2")));
-            }
-        }
-        
         [HttpGet]
         public IActionResult getAllOrders()
         {
@@ -109,6 +37,79 @@ namespace Jewelry_BE.Controllers
         public IActionResult createOrder([FromBody] OrderRequest orderRequest)
         {
             return Ok(_orderRepo.createOrder(orderRequest));
+        }
+
+        [HttpPost("vnpay")]
+        public IActionResult VnPay(OrderRequest orderRequest)
+        {
+            string IpAddressRequest = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var paymentUrl = _orderRepo.VNPay(double.Parse(orderRequest.FinalAmount.ToString()), "thanh toán bằng VNPAY", IpAddressRequest);
+            orderRequest.PaymentMethod = "VNPAY";
+            _orderRepo.createOrder(orderRequest);
+            return Ok(new { Url = paymentUrl });
+        }
+
+        [HttpGet("returnVnPay")]
+        public IActionResult ReturnVnPay(string url)
+        {
+            try
+            {
+                // Lấy các tham số từ query string
+                var queryParams = Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+                Console.WriteLine(queryParams);
+
+                // Lấy mã bí mật từ cấu hình
+                string vnp_HashSecret = _configuration["VNPay:HashSecret"];
+
+                // Tạo lại query string từ các tham số, ngoại trừ vnp_SecureHash và vnp_SecureHashType
+                var orderedParams = queryParams
+                    .Where(kvp => kvp.Key != "vnp_SecureHash" && kvp.Key != "vnp_SecureHashType")
+                    .OrderBy(kvp => kvp.Key)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                var rawData = string.Join("&", orderedParams.Select(kvp => $"{kvp.Key}={WebUtility.UrlEncode(kvp.Value)}"));
+
+                // Tạo chữ ký từ dữ liệu
+                var receivedSignature = queryParams["vnp_SecureHash"];
+                var calculatedSignature = GenerateVnPaySignature(rawData, vnp_HashSecret);
+
+                // Xác thực chữ ký
+                if (calculatedSignature == receivedSignature)
+                {
+                    // Lấy trạng thái thanh toán
+                    var paymentStatus = queryParams["vnp_ResponseCode"];
+
+                    if (paymentStatus == "00")
+                    {
+                        
+                        return Redirect("https://destinymatch.vercel.app/");
+                    }
+                    else
+                    {
+                        // Thanh toán thất bại
+                        return BadRequest("Payment failed");
+                    }
+                }
+                else
+                {
+                    // Chữ ký không hợp lệ
+                    return BadRequest("Invalid signature");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        private string GenerateVnPaySignature(string rawData, string hashSecret)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(System.Text.Encoding.UTF8.GetBytes(hashSecret)))
+            {
+                byte[] hashValue = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(rawData));
+                return BitConverter.ToString(hashValue).Replace("-", "").ToLower();
+            }
         }
     }
 }

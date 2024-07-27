@@ -3,6 +3,10 @@ using DAOs.Request;
 using DAOs.Response;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DAOs;
 
@@ -64,7 +68,7 @@ public class OrderDAO
         response.OrderItems = order.OrderItems.Adapt<List<OrderItemResponse>>();
         return response;
     }
-    
+
     public OrderResponse getOrderById(int id)
     {
         var order = _context.Orders
@@ -96,7 +100,7 @@ public class OrderDAO
         }
         return responses;
     }
-    
+
     private string GenerateUniqueOrderNumber()
     {
         var datePart = DateTime.UtcNow.ToString("yyyyMMdd");
