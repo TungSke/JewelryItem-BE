@@ -33,7 +33,10 @@ public class OrderRepo : IOrderRepo
             var vnp_TxnRef = Guid.NewGuid().ToString();
             var vnPayAmount = amount * 100000;
 
-            // Mã bí mật của bạn từ cấu hình
+            string baseUrl = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+            ? "http://localhost:7000"
+            : "https://jewquelry-group4-ewb0dqgndchcc0cm.eastus-01.azurewebsites.net";
+
             string vnp_HashSecret = "PFWXSZUDDBJVEATFGBOBRLYRXLEBWCCO";
 
             var requestData = new
@@ -47,7 +50,7 @@ public class OrderRepo : IOrderRepo
                 vnp_TxnRef = vnp_TxnRef, //số hóa đơn (dùng trong database) nên dùng GUID để tránh trùng lặp
                 vnp_OrderInfo = orderInfo, //nội dung thanh toán (description)
                 vnp_OrderType = "billpayment",
-                vnp_ReturnUrl = "/api/Order/returnVnPay", //call api return exist page
+                vnp_ReturnUrl = $"{baseUrl}/api/Order/returnVnPay", //call api return exist page
                 vnp_IpAddr = IpAddressRequest,
                 vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
                 vnp_ExpireDate = DateTime.Now.AddMinutes(2).ToString("yyyyMMddHHmmss"),
