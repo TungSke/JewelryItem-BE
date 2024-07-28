@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAOs
 {
@@ -19,9 +20,11 @@ namespace DAOs
             _context = context;
         }
 
-        public Employee Login(string email, string password)
+        public async Task<Employee?> Login(LoginRequest loginRequest)
         {
-            return _context.Employees.FirstOrDefault(e => e.Email == email && e.Password == password);
+            return await _context.Employees
+                .Where(e => e.Email == loginRequest.Email && e.Password == loginRequest.Password)
+                .FirstOrDefaultAsync();
         }
 
         public Employee GetEmployeeById(int id)

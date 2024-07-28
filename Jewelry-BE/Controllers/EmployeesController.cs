@@ -26,10 +26,22 @@ namespace Jewelry_BE.Controllers
             _employeeRepo = employeeRepo;
         }
 
-        [HttpGet("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            var employee = _employeeRepo.Login(email, password);
+            if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Email) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return BadRequest("Invalid login request");
+            }
+
+            var employee = await _employeeRepo.Login(loginRequest);
+
+            if (employee == null)
+            {
+                return Unauthorized("Invalid email or password");
+            }
+
             var jwtToken = GenerateToken(employee.EmployeeId.ToString(), employee.Email, employee.Role, employee.FullName);
             return Ok(new { token = jwtToken });
         }
