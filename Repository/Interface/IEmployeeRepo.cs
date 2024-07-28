@@ -6,7 +6,7 @@ namespace Repository.Interface
 {
     public interface IEmployeeRepo
     {
-        public Employee Login(string email, string password);
+        Task<Employee> Login(LoginRequest loginRequest);
         Employee GetEmployeeById(int id);
         List<EmployeeResponse> GetAllEmployees(string? search);
         void CreateEmployee(EmployeeRequest employee);

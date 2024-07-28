@@ -25,8 +25,11 @@ namespace Repository
 
         public List<EmployeeResponse> GetAllEmployees(string? search) => EmployeDAO.GetAllEmployees(search);
 
+        public async Task<Employee> Login(LoginRequest loginRequest) => await Task.Run(() => EmployeDAO.Login(loginRequest));
+        
+
         public Employee GetEmployeeById(int id) => EmployeDAO.GetEmployeeById(id);
 
-        public Employee Login(string email, string password) => EmployeDAO.Login(email, password);
+        
     }
 }
