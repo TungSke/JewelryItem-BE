@@ -34,6 +34,12 @@ namespace Jewelry_BE.Controllers
             return Ok(_customerRepo.createCustomer(customer));
         }
 
+        [HttpPut("{id}")]
+        public IActionResult updateCustomer(int id, [FromBody] CustomerRequest customer)
+        {
+            return Ok(_customerRepo.updateCustomer(id, customer));
+        }
+
         [HttpDelete("{id}")]
         public IActionResult deleteCustomer(int id)
         {
