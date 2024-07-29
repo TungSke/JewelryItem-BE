@@ -24,6 +24,9 @@ namespace Repository
 
         public bool deleteCustomer(int id) => CustomerDAO.deleteCustomer(id);
 
+        public CustomerResponse updateCustomer(int id, CustomerRequest customerRequest) =>
+            CustomerDAO.updateCustomer(id, customerRequest);
+
         public List<CustomerResponse> getAllCustomers(string? search) => CustomerDAO.getAllCustomers(search);
 
         public CustomerResponse getCustomerById(int id) => CustomerDAO.getCustomerById(id);

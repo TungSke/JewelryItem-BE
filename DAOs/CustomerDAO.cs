@@ -56,5 +56,20 @@ namespace DAOs
             _context.SaveChanges();
             return true;
         }
+
+        public CustomerResponse updateCustomer(int id, CustomerRequest customerRequest)
+        {
+            var existingCustomer = _context.Customers.Find(id);
+            if (existingCustomer == null)
+            {
+                return null;
+            }
+            existingCustomer.FullName = customerRequest.FullName;
+            existingCustomer.Email = customerRequest.Email;
+            existingCustomer.PhoneNumber = customerRequest.PhoneNumber;
+            _context.SaveChanges();
+            var updatedCustomerResponse = existingCustomer.Adapt<CustomerResponse>();
+            return updatedCustomerResponse;
+        }
     }
 }

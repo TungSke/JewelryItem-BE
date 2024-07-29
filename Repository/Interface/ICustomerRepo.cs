@@ -15,5 +15,6 @@ namespace Repository.Interface
         CustomerResponse getCustomerById(int id);
         CustomerResponse createCustomer(CustomerRequest customer);
         bool deleteCustomer(int id);
+        CustomerResponse updateCustomer(int id, CustomerRequest customerRequest);
     }
 }
