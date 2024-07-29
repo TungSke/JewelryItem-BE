@@ -35,10 +35,10 @@ public partial class JewelryItemContext : DbContext
 
     public virtual DbSet<Store> Stores { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
-    }
+    }*/
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
