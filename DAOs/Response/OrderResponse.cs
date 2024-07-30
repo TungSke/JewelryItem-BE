@@ -8,6 +8,8 @@ public class OrderResponse
 
     public int CustomerId { get; set; }
 
+    public string CustomerName { get; set; } = null!;
+
     public decimal TotalAmount { get; set; }
 
     public decimal? DiscountAmount { get; set; }
@@ -19,6 +21,8 @@ public class OrderResponse
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+    
+    public string Status { get; set; }
 
     public List<OrderItemResponse> OrderItems { get; set; } = new List<OrderItemResponse>();
 }

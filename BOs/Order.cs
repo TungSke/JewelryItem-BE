@@ -22,6 +22,8 @@ public partial class Order
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+    
+    public string Status { get; set; } = "Not Yet";
 
     public virtual Customer Customer { get; set; } = null!;
 
