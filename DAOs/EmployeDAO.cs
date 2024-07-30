@@ -59,6 +59,21 @@ namespace DAOs
             }
         }
 
+        public void UpdateEmployee(int id, EmployeeRequest request)
+        {
+            var exist = _context.Employees.Find(id);
+            if (exist != null)
+            {
+                exist.FullName = request.FullName;
+                exist.PhoneNumber = request.PhoneNumber;
+                exist.Email = request.Email;
+                exist.Password = request.Password;
+                exist.Role = request.Role;
+                exist.Department = request.Department;
+                _context.SaveChanges();
+            }
+        }
+
 
     }
 }

@@ -11,5 +11,6 @@ namespace Repository.Interface
         List<EmployeeResponse> GetAllEmployees(string? search);
         void CreateEmployee(EmployeeRequest employee);
         void DeleteEmployee(int id);
+        void UpdateEmployee(int id, EmployeeRequest request);
     }
 }
