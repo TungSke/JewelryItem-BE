@@ -22,7 +22,7 @@ public static class ServiceRegister
         });
 
         // Get the connection string from the configuration
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("OnlineConnection");
 
         // Register the DbContext with the connection string
         services.AddDbContext<JewelryItemContext>(options =>
