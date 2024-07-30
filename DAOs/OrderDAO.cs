@@ -112,6 +112,16 @@ namespace DAOs
             var uniquePart = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
             return $"ORD-{datePart}-{uniquePart}".Substring(0, 20);
         }
+
+        public async Task<Order?> getLastestOrder(int customerid)
+        {
+            var order = await _context.Orders.Include(x => x.Customer)
+                .Include(o => o.OrderItems).ThenInclude(x => x.Product)
+                .Where(o => o.CustomerId == customerid)
+                .OrderByDescending(o => o.OrderId)
+                .FirstOrDefaultAsync();
+            return order;
+        }
     }
 }
     

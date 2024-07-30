@@ -9,4 +9,5 @@ public interface IOrderRepo
     Task<OrderResponse?> GetOrderByIdAsync(int id);
     Task<List<OrderResponse>> GetAllOrdersAsync();
     string VNPay(double amount, string orderInfo, string IpAddressRequest);
+    Task SendEmail(int customerId);
 }

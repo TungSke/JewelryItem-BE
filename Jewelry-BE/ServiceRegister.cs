@@ -6,6 +6,7 @@ using Repository.Interface;
 using Repository;
 using System.Text.Json.Serialization;
 using DAOs;
+using Razor.Templating.Core;
 
 public static class ServiceRegister
 {
@@ -13,13 +14,15 @@ public static class ServiceRegister
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
+        //add template engine
+        services.AddRazorTemplating();
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
         // Get the connection string from the configuration
-        var connectionString = configuration.GetConnectionString("OnlineConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // Register the DbContext with the connection string
         services.AddDbContext<JewelryItemContext>(options =>
@@ -30,6 +33,7 @@ public static class ServiceRegister
         services.AddScoped<ProductDAO>();
         services.AddScoped<OrderDAO>();
         services.AddScoped<PromotionDAO>();
+
         services.AddScoped<IPromotionRepo, PromotionRepo>();
         services.AddScoped<IOrderRepo, OrderRepo>();
         services.AddScoped<IEmployeeRepo, EmployeeRepo>();

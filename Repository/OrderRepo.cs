@@ -3,8 +3,8 @@ using DAOs.Request;
 using DAOs.Response;
 using Microsoft.Extensions.Configuration;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
+using System.Net.Mail;
+using Razor.Templating.Core;
 
 namespace Repository;
 
@@ -12,11 +12,14 @@ public class OrderRepo : IOrderRepo
 {
     private readonly OrderDAO _orderDAO;
     private readonly IConfiguration _configuration;
+    private readonly IRazorTemplateEngine _razorTemplateEngine;
+    
 
-    public OrderRepo(OrderDAO orderDAO, IConfiguration configuration)
+    public OrderRepo(OrderDAO orderDAO, IConfiguration configuration, IRazorTemplateEngine razorTemplateEngine)
     {
         _orderDAO = orderDAO;
         _configuration = configuration;
+        _razorTemplateEngine=razorTemplateEngine;
     }
     public Task<OrderResponse> CreateOrderAsync(OrderRequest orderRequest) => _orderDAO.CreateOrderAsync(orderRequest);
 
@@ -91,4 +94,37 @@ public class OrderRepo : IOrderRepo
             return BitConverter.ToString(hashValue).Replace("-", "").ToLower();
         }
     }
+
+    public async Task SendEmail(int customerId)
+    {
+        var latestOrder = await _orderDAO.getLastestOrder(customerId);
+        var emailReceive = latestOrder.Customer.Email;
+        if (latestOrder == null)
+        {
+            throw new Exception("No order found for the given customer ID.");
+        }
+
+        var emailBody = await _razorTemplateEngine.RenderAsync("EmailTemplate/EmailTemplate.cshtml", latestOrder);
+        try
+        {
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("trinhsontung24102003@gmail.com");
+            mail.To.Add(emailReceive);
+            mail.Subject = "Order Info";
+            mail.Body = emailBody ?? "No content available";
+            mail.IsBodyHtml = true;
+
+            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+            smtp.UseDefaultCredentials = false;
+            smtp.EnableSsl = true;
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            smtp.Credentials = new NetworkCredential("Jewelry Shop-Group 4", "nnkn yqye hjth yuad");
+            smtp.Send(mail);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error when sending email", ex);
+        }
+    }
+
 }

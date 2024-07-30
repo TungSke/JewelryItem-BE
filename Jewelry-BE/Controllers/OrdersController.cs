@@ -118,5 +118,12 @@ namespace Jewelry_BE.Controllers
                 return BitConverter.ToString(hashValue).Replace("-", "").ToLower();
             }
         }
+
+        [HttpGet("customerid/{customerid}")]
+        public async Task<IActionResult> GetOrderByCustomerIdAsync(int customerid)
+        {
+            await _orderRepo.SendEmail(customerid);
+            return Ok("ok");
+        }
     }
 }
