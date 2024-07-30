@@ -52,7 +52,7 @@ public class OrderRepo : IOrderRepo
                 vnp_TxnRef = vnp_TxnRef, //số hóa đơn (dùng trong database) nên dùng GUID để tránh trùng lặp
                 vnp_OrderInfo = orderInfo, //nội dung thanh toán (description)
                 vnp_OrderType = "billpayment",
-                vnp_ReturnUrl = $"{baseUrl}/api/Order/returnVnPay", //call api return exist page
+                vnp_ReturnUrl = "https://swp-retake.vercel.app/",
                 vnp_IpAddr = IpAddressRequest,
                 vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
                 vnp_ExpireDate = DateTime.Now.AddMinutes(2).ToString("yyyyMMddHHmmss"),
@@ -108,8 +108,8 @@ public class OrderRepo : IOrderRepo
         try
         {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("trinhsontung24102003@gmail.com");
-            mail.To.Add(emailReceive);
+            mail.From = new MailAddress("trinhsontung24102003@gmail.com", "JewelryItem-Group 4");
+            mail.To.Add("trinhsontung2410@gmail.com");
             mail.Subject = "Order Info";
             mail.Body = emailBody ?? "No content available";
             mail.IsBodyHtml = true;
@@ -118,7 +118,8 @@ public class OrderRepo : IOrderRepo
             smtp.UseDefaultCredentials = false;
             smtp.EnableSsl = true;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-            smtp.Credentials = new NetworkCredential("Jewelry Shop-Group 4", "nnkn yqye hjth yuad");
+            
+            smtp.Credentials = new NetworkCredential("trinhsontung24102003@gmail.com", "kebk lwmk jmsl puzl");
             smtp.Send(mail);
         }
         catch (Exception ex)
@@ -126,5 +127,6 @@ public class OrderRepo : IOrderRepo
             throw new Exception("Error when sending email", ex);
         }
     }
+
 
 }
