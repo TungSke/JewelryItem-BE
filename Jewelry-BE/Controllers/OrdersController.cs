@@ -44,6 +44,7 @@ namespace Jewelry_BE.Controllers
         public async Task<IActionResult> CreateOrderAsync([FromBody] OrderRequest orderRequest)
         {
             var order = await _orderRepo.CreateOrderAsync(orderRequest);
+            await _orderRepo.SendEmail(orderRequest.CustomerId);
             return Ok(order);
         }
 
