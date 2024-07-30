@@ -49,6 +49,23 @@ namespace DAOs
                 _context.SaveChanges();
             }
         }
+        public void UpdateProduct(int id, ProductRequest updatedProductRequest)
+        {
+            var existingProduct = _context.Products.Find(id);
+            if (existingProduct != null)
+            {
+                existingProduct.ProductName = updatedProductRequest.ProductName;
+                existingProduct.ProductCode = updatedProductRequest.ProductCode;
+                existingProduct.Category = updatedProductRequest.Category; 
+                existingProduct.Description = updatedProductRequest.Description;
+                existingProduct.UnitPrice = updatedProductRequest.UnitPrice;
+                existingProduct.CostPrice = updatedProductRequest.CostPrice;
+                existingProduct.Weight = updatedProductRequest.Weight;
+                existingProduct.IsJewelry = updatedProductRequest.IsJewelry;
+                existingProduct.IsGold = updatedProductRequest.IsGold;
+                _context.SaveChanges();
+            }
+        }
 
     }
 }

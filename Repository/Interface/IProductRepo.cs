@@ -14,5 +14,6 @@ namespace Repository.Interface
         Product findbyId(int id);
         void addnewProduct(ProductRequest product);
         void deleteProduct(int id);
+        void updateProduct(int id, ProductRequest product);
     }
 }

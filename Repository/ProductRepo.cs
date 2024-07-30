@@ -21,6 +21,7 @@ namespace Repository
         public void addnewProduct(ProductRequest product) => productDAO.addnewProduct(product);
 
         public void deleteProduct(int id) => productDAO.deleteProduct(id);
+        public void updateProduct(int id, ProductRequest product) => productDAO.UpdateProduct(id, product);
 
         public Product findbyId(int id) => productDAO.findbyId(id);
 

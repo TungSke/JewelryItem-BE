@@ -34,6 +34,13 @@ namespace Jewelry_BE.Controllers
             return Ok(_productRepo.findbyId(id));
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequest product)
+        {
+            _productRepo.updateProduct(id, product);
+            return Ok("Update Success");
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] ProductRequest product)
         {

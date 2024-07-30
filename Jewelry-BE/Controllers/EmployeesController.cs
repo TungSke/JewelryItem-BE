@@ -97,5 +97,12 @@ namespace Jewelry_BE.Controllers
             _employeeRepo.DeleteEmployee(id);
             return Ok();
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateEmployee(int id, EmployeeRequest request)
+        {
+            _employeeRepo.UpdateEmployee(id, request);
+            return Ok("Update Success");
+        }
     }
 }

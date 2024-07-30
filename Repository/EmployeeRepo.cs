@@ -22,6 +22,7 @@ namespace Repository
         public void CreateEmployee(EmployeeRequest employee) => EmployeDAO.CreateEmployee(employee);
 
         public void DeleteEmployee(int id) => EmployeDAO.DeleteEmployee(id);
+        public void UpdateEmployee(int id, EmployeeRequest request) => EmployeDAO.UpdateEmployee(id, request);
 
         public List<EmployeeResponse> GetAllEmployees(string? search) => EmployeDAO.GetAllEmployees(search);
 
