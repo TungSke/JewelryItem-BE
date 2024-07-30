@@ -143,6 +143,7 @@ public partial class JewelryItemContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(50).IsUnicode(false).HasDefaultValue("Not Yet");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)

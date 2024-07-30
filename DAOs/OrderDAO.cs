@@ -77,6 +77,7 @@ namespace DAOs
         {
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.OrderId == id);
 
             if (order == null)
@@ -85,7 +86,19 @@ namespace DAOs
             }
 
             var response = order.Adapt<OrderResponse>();
-            response.OrderItems = order.OrderItems.Adapt<List<OrderItemResponse>>();
+            response.CustomerName = order.Customer.FullName;
+            response.OrderItems = order.OrderItems
+                .Select(oi =>
+                {
+                    var itemResponse = oi.Adapt<OrderItemResponse>();
+                    var product = _context.Products.Find(oi.ProductId);
+                    if (product != null)
+                    {
+                        itemResponse.ProductName = product.ProductName;
+                    }
+                    return itemResponse;
+                })
+                .ToList();
             return response;
         }
 
@@ -93,14 +106,30 @@ namespace DAOs
         {
             var orders = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.Customer)
                 .ToListAsync();
 
             var responses = orders.Adapt<List<OrderResponse>>();
             foreach (var response in responses)
             {
+                response.CustomerName = orders
+                    .First(o => o.OrderId == response.OrderId)
+                    .Customer.FullName;
+                
                 response.OrderItems = orders
                     .First(o => o.OrderId == response.OrderId)
-                    .OrderItems.Adapt<List<OrderItemResponse>>();
+                    .OrderItems
+                    .Select(oi =>
+                    {
+                        var itemResponse = oi.Adapt<OrderItemResponse>();
+                        var product = _context.Products.Find(oi.ProductId);
+                        if (product != null)
+                        {
+                            itemResponse.ProductName = product.ProductName; 
+                        }
+                        return itemResponse;
+                    })
+                    .ToList();
             }
 
             return responses;
