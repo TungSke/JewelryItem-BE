@@ -39,7 +39,8 @@ CREATE TABLE Orders (
     FinalAmount DECIMAL(18,2) NOT NULL,
     PaymentMethod VARCHAR(50) NOT NULL,
     CreatedAt DATETIME NOT NULL,
-    UpdatedAt DATETIME NOT NULL
+    UpdatedAt DATETIME NOT NULL,
+	[Status] varchar(50) default 'Not Yet'
 );
 
 -- Tạo bảng OrderItems
