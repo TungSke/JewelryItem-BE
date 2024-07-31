@@ -53,4 +53,4 @@ jobs:
           app-name: 'jewquelry-group4'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C9D138D36FD649E7881A82999CF8D800 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1A0DAD2C6850417D94589598E45C0B7A }}
