@@ -54,5 +54,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'jewquelry-group4'
-          package: ./.net-app
+          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5056559FCFB14AE4825CBC4815F00B78 }}
