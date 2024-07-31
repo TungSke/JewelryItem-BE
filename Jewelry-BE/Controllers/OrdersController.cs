@@ -44,7 +44,7 @@ namespace Jewelry_BE.Controllers
         public async Task<IActionResult> CreateOrderAsync([FromBody] OrderRequest orderRequest)
         {
             var order = await _orderRepo.CreateOrderAsync(orderRequest);
-            await _orderRepo.SendEmail(orderRequest.CustomerId);
+            await _orderRepo.SendEmail(order.CustomerId);
             return Ok(order);
         }
 
@@ -52,9 +52,11 @@ namespace Jewelry_BE.Controllers
         public async Task<IActionResult> VnPay(OrderRequest orderRequest)
         {
             string IpAddressRequest = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
-            var paymentUrl = _orderRepo.VNPay(double.Parse(orderRequest.FinalAmount.ToString()), "thanh toán bằng VNPAY", IpAddressRequest);
             orderRequest.PaymentMethod = "VNPAY";
-            await _orderRepo.CreateOrderAsync(orderRequest);
+            var order = await _orderRepo.CreateOrderAsync(orderRequest);
+
+            var paymentUrl = _orderRepo.VNPay(double.Parse(order.FinalAmount.ToString()), "thanh toán bằng VNPAY", IpAddressRequest);
+                       
             await _orderRepo.SendEmail(orderRequest.CustomerId);
             return Ok(new { Url = paymentUrl });
         }
