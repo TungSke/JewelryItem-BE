@@ -49,13 +49,13 @@ public class OrderRepo : IOrderRepo
                 vnp_Amount = vnPayAmount,
                 vnp_Locale = "vn",
                 vnp_CurrCode = "VND",
-                vnp_TxnRef = vnp_TxnRef, //số hóa đơn (dùng trong database) nên dùng GUID để tránh trùng lặp
-                vnp_OrderInfo = orderInfo, //nội dung thanh toán (description)
+                vnp_TxnRef = vnp_TxnRef,
+                vnp_OrderInfo = orderInfo,
                 vnp_OrderType = "billpayment",
                 vnp_ReturnUrl = "https://swp-retake.vercel.app/",
                 vnp_IpAddr = IpAddressRequest,
-                vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                vnp_ExpireDate = DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"),
+                vnp_CreateDate = DateTime.UtcNow.ToString("yyyyMMddHHmmss"),
+                vnp_ExpireDate = DateTime.UtcNow.AddMinutes(10).ToString("yyyyMMddHHmmss"), 
             };
 
             // Sắp xếp các thuộc tính của yêu cầu theo thứ tự chữ cái
