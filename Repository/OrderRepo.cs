@@ -54,8 +54,8 @@ public class OrderRepo : IOrderRepo
                 vnp_OrderType = "billpayment",
                 vnp_ReturnUrl = "https://swp-retake.vercel.app/",
                 vnp_IpAddr = IpAddressRequest,
-                vnp_CreateDate = DateTime.UtcNow.ToString("yyyyMMddHHmmss"),
-                vnp_ExpireDate = DateTime.UtcNow.AddMinutes(10).ToString("yyyyMMddHHmmss"), 
+                vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                vnp_ExpireDate = DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"), 
             };
 
             // Sắp xếp các thuộc tính của yêu cầu theo thứ tự chữ cái
