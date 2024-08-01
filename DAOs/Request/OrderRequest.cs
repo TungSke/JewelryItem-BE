@@ -15,6 +15,8 @@ public class OrderRequest
     public decimal FinalAmount { get; set; }
 
     public string PaymentMethod { get; set; } = null!;
+    [JsonIgnore]
+    public string Status { get; set; } = "Done";
 
     [JsonIgnore]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
