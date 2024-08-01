@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DAOs.Request
@@ -25,9 +26,9 @@ namespace DAOs.Request
         public bool IsJewelry { get; set; }
 
         public bool IsGold { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
+        [JsonIgnore]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [JsonIgnore]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }
