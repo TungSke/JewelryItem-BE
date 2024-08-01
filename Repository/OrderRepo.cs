@@ -109,7 +109,7 @@ public class OrderRepo : IOrderRepo
         {
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("trinhsontung24102003@gmail.com", "JewelryItem-Group 4");
-            mail.To.Add("trinhsontung2410@gmail.com");
+            mail.To.Add(emailReceive);
             mail.Subject = "Order Info";
             mail.Body = emailBody ?? "No content available";
             mail.IsBodyHtml = true;
