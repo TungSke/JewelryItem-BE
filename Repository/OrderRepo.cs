@@ -39,7 +39,7 @@ public class OrderRepo : IOrderRepo
             ? "http://localhost:7000"
             : "https://jewquelry-group4-ewb0dqgndchcc0cm.eastus-01.azurewebsites.net";
 
-            string vnp_HashSecret = "PFWXSZUDDBJVEATFGBOBRLYRXLEBWCCO";
+            string vnp_HashSecret = "";
 
             var requestData = new
             {
@@ -108,7 +108,7 @@ public class OrderRepo : IOrderRepo
         try
         {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("trinhsontung24102003@gmail.com", "JewelryItem-Group 4");
+            mail.From = new MailAddress("", "JewelryItem-Group 4");
             mail.To.Add(emailReceive);
             mail.Subject = "Order Info";
             mail.Body = emailBody ?? "No content available";
@@ -119,7 +119,7 @@ public class OrderRepo : IOrderRepo
             smtp.EnableSsl = true;
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             
-            smtp.Credentials = new NetworkCredential("trinhsontung24102003@gmail.com", "kebk lwmk jmsl puzl");
+            smtp.Credentials = new NetworkCredential("email", "password");
             smtp.Send(mail);
         }
         catch (Exception ex)
