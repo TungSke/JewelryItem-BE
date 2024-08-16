@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  jewelry-be:
+    image: ${DOCKER_REGISTRY-}jewelrybe
+    build:
+      context: .
+      dockerfile: Jewelry-BE/Dockerfile
