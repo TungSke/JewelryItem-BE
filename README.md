@@ -1,2 +1,2 @@
-The quickest project run in 1 week
-**All the team has passed**
+The quickest project was completed in one week
+**All team members passed**
